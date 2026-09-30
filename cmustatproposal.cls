@@ -37,7 +37,11 @@
 \RequirePackage{fancyhdr}
 
 % Figure caption styles: sans-serif, with label "Figure N" italicized
-\RequirePackage[font=sf,labelfont=it]{caption}
+% \RequirePackage[font=sf,labelfont=it]{caption}
+\RequirePackage[labelfont=it, font=small]{caption}
+
+% AX: reduce paragraph spacing, remove indent
+\RequirePackage[skip=6pt]{parskip}
 
 % Provide a shorttitle command for page headings, in case their title is too
 % long
@@ -51,9 +55,10 @@
 \graphicspath{ {figures/} } % specify the path where figures are located
 
 % Bibliography
-\RequirePackage{natbib}
-\bibliographystyle{apalike} % bibliography style - recommend using apalike-doi
+\RequirePackage[square, numbers]{natbib}
+% \bibliographystyle{apalike} % bibliography style - recommend using apalike-doi
 % as it hyperlinks DOIs
+\bibliographystyle{abbrvnat}
 
 % PDF metadata
 \AtBeginDocument{%
@@ -82,7 +87,8 @@
   \renewcommand{\headrulewidth}{0pt}
 
   \ifdraft{
-    \newcommand{\draftmark}{{\sffamily Draft as of \today}}
+    % \newcommand{\draftmark}{{\sffamily Draft as of \today}}
+    \newcommand{\draftmark}{{\footnotesize \textit{Draft as of \today}}}
     \fancyfoot[CE,CO]{\draftmark}
   }{
     \fancyfoot{}
