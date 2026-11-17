@@ -1,0 +1,39 @@
+\documentclass[draft]{cmustatproposal} % remove draft option when done
+
+\title{Texture encoding in the visual processing hierarchy}
+\author{Al Xin}
+\date{10 Dec 2026}
+
+% Your advisor. If you have a coadvisor, just use \advisor twice.
+% \advisor{Rob Kass}
+
+% Your committee or external advisors. For external advisors or external
+% committee members, be sure to include their affiliation.
+\committee{Rob Kass, Statistics Advisor}
+\committee{Jenelle Feather, External Advisor, CMU Psychology and Neuroscience Institute}
+
+\documenttype{Advanced Data Analysis Project Report} % for ADA reports
+
+\input{statscmds.tex}
+
+% Markup for TODFOs -----------------------------------------
+
+\usepackage{xcolor}
+\usepackage[normalem]{ulem} 
+\usepackage{environ}        
+\usepackage{tcolorbox}      
+\usepackage{cancel} 
+\tcbuselibrary{breakable, skins}
+
+\usepackage{booktabs}
+
+\newcommand{\todo}[1]{{\color{purple}#1}}
+\newenvironment{todoblock}{\color{purple}}{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+Title (tentative): Texture encoding in the visual processing hierarchy
+
+Abstract (tentative): In object recognition, image information is first processed in the primary visual cortex (V1), then passes through V2, V4, and the inferotemporal cortex (IT). Later visual regions select for ``higher-level'' features, but the nature of these features remains ill-defined. For instance, it is unclear how well naturalistic texture statistics remain encoded in IT neural responses. Previous work found lower family separability in IT compared to V4, suggesting IT loses information about lower order texture features. However, IT tends to be sparser in both within-site responses and population responses. Thus, correcting for sample size based on reliability may underestimate the information contained in sparse IT sites. We analyzed multi-unit activations from macaques passively fixating on texture stimuli, with recordings taken from V1, V2, V4, and IT. When correcting for reliability and sparseness, we find that texture family separability consistently increases with each higher level region and that IT separability exceeds V4. Lower-level image features may remain encoded in IT responses, albeit within a sparser encoding.
+\end{document}

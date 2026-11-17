@@ -55,10 +55,14 @@
 \graphicspath{ {figures/} } % specify the path where figures are located
 
 % Bibliography
-\RequirePackage[square, numbers]{natbib}
+% \RequirePackage[square, numbers]{natbib}
+
 % \bibliographystyle{apalike} % bibliography style - recommend using apalike-doi
 % as it hyperlinks DOIs
-\bibliographystyle{abbrvnat}
+% \bibliographystyle{abbrvnat}
+
+\RequirePackage[square, numbers, comma]{natbib}
+\bibliographystyle{unsrtnat}
 
 % PDF metadata
 \AtBeginDocument{%

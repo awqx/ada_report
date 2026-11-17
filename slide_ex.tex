@@ -1,0 +1,38 @@
+\documentclass[aspectratio=169, handout]{beamer}
+% \documentclass[aspectratio=169]{beamer}
+\usetheme{boxes}
+\usecolortheme{seagull}
+
+\setlength{\parskip}{\medskipamount} 
+\setlength{\itemsep}{10pt}
+\setbeamersize{text margin left=15mm,text margin right=15mm} 
+% \setbeamertemplate{footline}[frame number]
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=teal,
+}
+
+\usepackage[style=authoryear]{biblatex}
+\addbibresource{refs.bib}
+\AtBeginBibliography{\footnotesize}
+
+% Title %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{(ADA) Texture representation in the visual processing hierarchy}
+\author{Al Xin, axin@andrew.cmu.edu}
+\institute{Rob Kass (Stats and PNC), Jenelle Feather (Psych and NI)}
+\date{August 25, 2026} 
+
+\input{statscmds.tex}
+
+\begin{document}
+
+\begin{frame}{Higher visual regions show higher sparsity across reliable sites}
+\centering
+    \includegraphics[width=0.9\textwidth]{figures/hoyer_corr.png}
+\end{frame}
+\end{document}

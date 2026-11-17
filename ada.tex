@@ -5,11 +5,12 @@
 \date{10 Dec 2026}
 
 % Your advisor. If you have a coadvisor, just use \advisor twice.
-\advisor{Rob Kass}
+% \advisor{Rob Kass}
 
 % Your committee or external advisors. For external advisors or external
 % committee members, be sure to include their affiliation.
-\committee{Jenelle Feather, CMU Psychology and Neuroscience Institute}
+\committee{Rob Kass, Statistics Advisor}
+\committee{Jenelle Feather, External Advisor, CMU Psychology and Neuroscience Institute}
 
 \documenttype{Advanced Data Analysis Project Report} % for ADA reports
 
@@ -54,115 +55,175 @@
 \begin{abstract}
 
 \begin{todoblock}
-I colored notes and temporary/uncertain text blocks in purple. 
+!! Notes and temporary/uncertain text blocks in purple.
+
+In object recognition, image information is first processed in the primary visual cortex (V1), then passes through V2, V4, and the inferotemporal cortex (IT). Later visual regions select for ``higher-level'' features. Outside of V1, the nature of these features remains ill-defined. For instance, previous work disagrees as to whether texture statistics remain well-encoded in IT. Natural textures are a special class of roughly homogeneous images that can be parameterized into families based on \( N \)th-order joint image densities. Higher between-family separability indicates that the recorded neurons select for the \(N\)th-order statistics that parameterize unique families. Previous work found better separability of texture families in V2 and V4 compared to V1 and lower family separability in IT compared to V4. However, IT tends to be sparser in both within-site responses and population responses. That is, individual neurons respond to only a few stimuli, and stimuli tend to evoke responses from only a few neurons. Thus, existing practices for correcting for sample size based on reliability tends to underestimate sparse sites in IT. When correcting these reliability cutoffs, we find that texture family separability consistently increases with each higher level region and that IT separability exceeds V4. Our results indicate that ``lower-level'' image features remain encoded in IT responses. That is, IT exhibits a sparse, ``efficient'' encoding of image features without necessarily summarizing over lower order statistics.
 \end{todoblock}
 
 \end{abstract}
 
 \section{Introduction}
 
-Image recognition occurs through the cumulative transformation and transfer of visual information through successive regions of the brain. Processing starts in the primary visual cortex (V1), which contains neurons that selectively respond to simple image features like oriented edges. As information passes through later regions, such as V2, V4, and IT, each subsequent area contains neurons selective for progressively higher-level visual features (see Figure \ref{fig:visual_regions} \todo{a better figure might be available}). 
-% For instance, the inferior temporal gyrus (IT), a later visual region, contains neurons that selectively respond to complex object categories, like hands or flowers \cite{desimone_stimulus-selective_1984}. 
-
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\linewidth]{figures/dicarlo2012-visual_processing.jpg}
-    \caption{The regions involved in visual object recognition, copied from Figure 3 of Dicarlo, Zoccolan, and Rust (2012) \cite{dicarlo_how_2012}.}
+    \includegraphics[width=0.7\linewidth]{img/eshuijs2023-visual_hierarchy.jpg}
+    \caption{\todo{The regions involved in visual object recognition, copied from Eshuijs (2023) \cite{eshuijs_m31_2023} (TODO: replace with custom image for final presentation/report).}}
     \label{fig:visual_regions}
 \end{figure}
 
-While neurons in V1 can be characterized by a few parameters (namely, the location and direction of an edge), the features relevant to other regions remain ill-defined. One approach to characterize the relevant visual features for each layer is through recording neural responses to visual texture stimuli. Visual textures are approximately homogeneous images with repeated elements, such as sand, tree bark, granite, or honeycomb (for examples, see Fig. \ref{fig:ex_texture}). Texture families can be parameterized by a set of image statistics, defined as \(N\)th-order empirical densities of pixels \cite{portilla_parametric_2000} (\todo{cite the origin of this theory of perception}). Texture images in the same family can be visually distinct while sharing the same overall image statistics. 
+After light hits the retina and initiates neural activity, the resulting image information passes through the primary visual pathway of the brain, producing the sensation of vision. Processing starts in the primary visual cortex (V1), then passes through V2, V4, and the inferotemporal cortex (IT).  Each subsequent area contains neurons selective for progressively ``higher-level'' visual features (Fig. \ref{fig:visual_regions}). For instance, neurons in V1 respond to simple oriented edges, while neurons in IT might respond to complex objects categories like hands or faces. 
+
+However, relative  to V1, the response properties of neurons in various regions have not been well-defined. To discover relevant features, one can take a decoding approach. Given a diverse stimuli set, high separability of neural responses suggests selectivity for contrasting features in the set. Accordingly, low separability of responses suggests that differences in the stimuli are not well-represented. 
+
+One approach to produce contrastive stimuli is with visual textures. Visual textures are approximately homogeneous images with repeated elements, such as sand, tree bark, granite, or honeycomb (Fig. \ref{fig:ex_texture}). Texture families can be parameterized by a set of image statistics, defined as \(N\)th-order empirical densities of pixels \cite{julesz_visual_1962, portilla_parametric_2000}. Furthermore, since image statistics are spatially averaged, textures in the same family can be visually distinct while sharing higher-order image statistics. Thus, by comparing responses to different families or unique images within families, one can determine whether the neurons select for the image statistics present in the provided textures.  
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.5\linewidth]{figures/portilla_simoncelli2000-textures.jpg}
-    \caption{Example naturalistic textures, adapted from Figure 15 in Portilla and Simoncelli (2000) \cite{portilla_parametric_2000}. For each pair, the left image was used as a seed to generate the statistics-matched images on the right.}
+    \includegraphics[width=0.5\linewidth]{img/portilla_simoncelli2000-textures.jpg}
+    \caption{Example naturalistic textures, adapted from Figure 15 in Portilla and Simoncelli (2000) \cite{portilla_parametric_2000} \todo{(TODO: Replace with the real stimuli presented in the experiment).} For each pair, the left image was used as a seed to generate the statistics-matched images on the right.}
     \label{fig:ex_texture}
 \end{figure}
 
-Thus, according this theory of texture perception, the selectivity of different regions to different image statistics can be determined by comparing the neural responses within families to the responses between families. Experiments with texture stimuli generally find that higher visual regions tend to be more selective for higher \(N\)th-order image statistics. Previously, Ziemba et al. (2016) found better within-family separation of neural responses in V1 and better between-family separation in V2 \cite{ziemba_selectivity_2016}. Furthermore, Okazawa et al. (2015, 2017) compared the selectivity of V2 and V4 neurons for image statistics in texture stimuli and found V4 neurons tended to be selective for higher order statistics \cite{okazawa_image_2015, okazawa_gradual_2017}. Other analyses of between-region texture responses found that texture stimuli with matched higher order image statistics produced higher firing of V2 and V4 neurons compared to stimuli lacking higher order image statistics  \cite{freeman_functional_2013, lee_developmentally_2024, lee_emergence_2025}. 
+Experiments with texture stimuli generally find that higher visual regions tend to be more selective for higher \(N\)th-order image statistics. Previously, Ziemba et al. (2016) found better within-family separation of neural responses in V1 and better between-family separation in V2 \cite{ziemba_selectivity_2016}. Furthermore, Okazawa et al. (2015, 2017) compared the selectivity of V2 and V4 neurons for image statistics in texture stimuli and found V4 neurons tended to be selective for higher order statistics \cite{okazawa_image_2015, okazawa_gradual_2017}. Other analyses of between-region texture responses found that texture stimuli with matched higher order image statistics produced higher firing of V2 and V4 neurons compared to stimuli lacking higher order image statistics  \cite{freeman_functional_2013, lee_developmentally_2024, lee_emergence_2025}. 
 
-However, these existing analyses tend to lack results for the entire visual processing stream, with few experimenters recording textures responses in IT. Higher level areas tend to produce sparse responses, so typical approaches in the literature, such as size-matched population analyses or single-site neuron metrics, may not produce reliable comparisons between IT and earlier visual areas. \todo{(TODO: additional lit review on IT texture representation).}
-
-\todo{(Tentative description of findings) In IT, we found that neural responses to texture stimuli tend to be sparser than other regions, with a higher proportion of unreliable sites. When these differences are not accounted for, the separation of texture families appears greater in IT than V4. Surprisingly, within certain texture families, IT also achieves better separation of sample images, suggesting fine-grained image information remains represented in later visual areas.}
+However, these existing analyses tend to lack results for the entire visual processing stream, with few experimenters recording textures responses in IT. Higher level areas tend to produce sparse responses, so typical approaches in the literature, such as size-matched population analyses or single-site neuron metrics, may not produce reliable comparisons between IT and earlier visual areas. \todo{(Tentative description) In IT, we found that neural responses to texture stimuli tend to be sparser than other regions, with a higher proportion of unreliable sites. When these differences are not accounted for, the separation of texture families appears greater in IT than V4. Surprisingly, within certain texture families, IT also achieves better separation of sample images, suggesting fine-grained image information remains represented in later visual areas.}
 
 \section{Methods}
 
+\todo{TODO: Add an overview.}
+
+\subsection{Model of neural response separability}
+In general, we can describe a site's response \( y \) to stimulus \( i \) at repetition \( r \) as 
+\[ y_{i, r} = \mu + a_{i} + \epsilon_{i, r}, \]
+where \( \mu \) is the site's baseline response (defined here as its response to a blank stimulus), \( a_i \) is the level effect of stimulus \( i \), and \( \epsilon_{i, r} (t) \) captures repetition-specific noise \( \epsilon \). \todo{Although the recorded neural response is a time series, we summarize the response by averaging/summing the firing over the response window (\ref{subsct:scalar_summary}).} 
+
+By including family-wise and nested sample-wise effects, the model can be expanded as
+\begin{equation}
+\label{eqn:model}
+% \mathbf{Y}_{f, s, r} (t) = \bfs{\mu}_{f, s} (t) + \bfs{\epsilon}_{f, s, r} (t)
+y_{f, s, r} (t) = \mu + a_{f} + b_{s(f)} + c_r + \epsilon_{f, s, r},
+\end{equation}
+where \( f \in \{ 1, 2, \dots 35 \} \) indexes the texture family, \( s (f) \in \{ 1, 2, \dots, 15 \} \) indexes a sample image within family \( f \), and \( r \in \{ 1, 2, \dots, 6 \} \) indexes the repetition of a specific sample. Then, for a given region with \( p \) sites, we can write the population neural response as 
+\begin{equation}
+\label{eqn:model}
+% \mathbf{Y}_{f, s, r} (t) = \bfs{\mu}_{f, s} (t) + \bfs{\epsilon}_{f, s, r} (t)
+\mathbf{y}_{f, s, r} (t) = \bfs{\mu} + \mathbf{a}_{f} + \mathbf{b}_{s(f)} + \mathbf{c}_r + \bfs{\epsilon}_{f, s, r}, 
+\end{equation}
+where each term is a \( p \)-length vector. 
+
+We can quantify the separability of the population neural response with Mahalanobis distance \(d_M: \mathbb{R}^p \times \mathbb{R}^p \to \mathbb{R} \) (Sec. \ref{methods:d_M}). We define the pairwise between-family separability as 
+\[ d_M \left( \mathbf{a}_{f_1}, \mathbf{a}_{f_2}  \right) :  f_1 \neq f_2. \]
+Within a fixed family \( f \), we define the pairwise between-sample separability as
+\[ d_M \left( \mathbf{a}_{f} + \mathbf{b}_{s_1(f)}, \mathbf{a}_{f} + \mathbf{b}_{s_2(f)}  \right) : s_1 (f) \neq s_2 (f). \]
+Mahalanobis distance is invariant to translation, so the grand mean \( \bfs{\mu} \) can be omitted from the separability definitions.
+
+
 \subsection{Neural data collection}
 
-\subsubsection{Texture stimuli synthesis}
+\subsubsection{Texture stimuli synthesis and presentation}
 
-Lee et al. (2024) generated texture stimuli with the Portilla and Simoncelli (PS) parametric texture model. The lowest level of the model matches the local statistic of the original image, e.g., the correlation in luminance between adjacent pixels, the average luminance in a small area, or the total variation in luminance. Subsequent layers control higher level correlations, e.g., correlations between neighboring patterns of pixels. Portilla and Simoncelli describe the higher levels as V1-like, or analogous to the receptive fields of the primary visual cortex. Matching V1-like correlations produces more coherent \textit{naturalistic} structure (examples in Figure \ref{fig:noise_natur}). \todo{(Remove?) Though the degree of naturalistic structure varied in the behavioral task, the passive fixation recordings only contained noisy/zero strength textures or full strength naturalistic textures.} Lee et al. generated 15 samples of noisy and naturalistic images from 35 families (\(15 \times 35 \times 2 = 1050\) unique images), with each family corresponding to a different original seed image. 
+Lee et al. (2024) generated texture stimuli with the Portilla and Simoncelli (PS) hierarchical parametric texture model. The lowest level of the model matches the local statistic of the original image, e.g., the correlation in luminance between adjacent pixels, the average luminance in a small area, or the total variation in luminance. Subsequent layers control higher level correlations, e.g., correlations between neighboring patterns of pixels. 
+% Portilla and Simoncelli describe the higher levels as V1-like, or analogous to the receptive fields of the primary visual cortex.  
+When synthesizing new samples from a seed image, matching the higher-level correlations produces \textit{naturalistic} structure, while omitting these statistics produces \textit{noise} texture (Fig. \ref{fig:noise_natur}). 
+
+Lee et al. generated 15 samples of noise or naturalistic images from 35 families (\(15 \times 35 \times 2 = 1050\) unique images), with each family corresponding to a different original seed image. Within a session, Lee et al. presented 6 blocks of the 1050 images, with image order pseudorandomized within each block. Furthermore, to record baseline activity, each round contained 100 blank images, resulting in a total of \( 6 \times (1050 + 100) = 6900 \) observations per session. The experimenters presented images in blocks of 8 images, with each stimuli shown for 100 ms and followed by 100 ms of no stimulus. Presenting the stimuli in quick succession limits the recorded activity to short-term feed-forward visual processing rather than recurrent activity from longer-term cognitive processes. 
+% The experimenters trained monkeys to fixate on the center of the screen and rewarded the monkeys for remaining fixated through a block.
+% put this all in one experiment figure
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\linewidth]{figures/lee2024-fig01-cropped.jpg}
+    \includegraphics[width=0.8\linewidth]{img/lee2024-fig01-cropped.jpg}
     \caption{Naturalistic and noisy samples generated from different seed images, adapted from Figure 1 of Lee et al. (2024) \cite{lee_developmentally_2024}.}
     \label{fig:noise_natur}
 \end{figure}
 
-\subsubsection{Passive fixation recording}
-
-Lee et al. (2024) chronically implanted six monkeys with two 96-site Utah arrays each. Table \ref{tbl:sites} reports the number of sites per array, the arrays per region, and the total number of sites per region. \todo{(Remove?) Array locations were determined based on anatomical landmarks and physiological response properties.} Within a session, Lee et al. presented 6 repetitions of each of the 1050 unique images. Furthermore, within each round of 1050 images, the experimenters interspersed 100 blank images. Thus, each session contained \( 6 \times (1050 + 100) = 6900 \) observations. The experimenters presented images blocks of 8 images (100 ms on, 100 ms off). The experimenters trained monkeys to fixate on the center of the screen and rewarded the monkeys for remaining fixated through a block. 
-% If monkeys broke fixation, the experimenters interrupted the block and presented the sequence later during the session. 
-Lee et al. reported multi-unit activations in 10 ms bins and did not spike sort the firing. 
+\subsubsection{Multi-unit activation recording}
 
 \begin{table}[]
     \centering
     \small
-    \begin{tabular}{crrrrr}
+    \begin{tabular}{cllllr}
     \toprule
         Region & Array 1 & Array 2 & Array 3 & Array 4 & Total  \\
     \midrule
-        V1 & 61 (M1) & 96 (M6) &         &         & 157 \\
-        V2 & 35 (M1) & 96 (M2) &         &         & 131 \\
-        V4 & 96 (M1) & 96 (M2) & 96 (M8) &         & 288 \\
-        IT & 96 (M3) & 96 (M6) & 96 (M6) & 96 (M7) & 384 \\
+        V1 & 61 (M1, 29) & 96 (M6, 36) &         &         & 157 \\
+        V2 & 35 (M1, 29) & 96 (M2, 29) &         &         & 131 \\
+        V4 & 96 (M1, 29) & 96 (M2, 29) & 96 (M8, 409) &         & 288 \\
+        IT & 96 (M3, 20) & 96 (M6, 34) & 96 (M7, 34) & 96 (M6, 221) & 384 \\
     \bottomrule
     \end{tabular}
-    \caption{The number of sites for each array for each region, with monkey ID in parentheses. For M1, one array sat on the border between V1 and V2. For M3, the authors could not reliably determine the location of the arrays, so I removed this subject from my analyses.}
+    \caption{The number of sites for each array for each region, with monkey ID and age of recording (in weeks) in parentheses. For M1, one array sat on the border between V1 and V2.}
     \label{tbl:sites}
 \end{table}
 
+Lee et al. (2024) chronically implanted six monkeys with two 96-site Utah arrays each. After surgery, the experimenters determined the array location based on anatomical landmarks and physiological response properties (see Table \ref{tbl:sites} for site numbers and locations). For each site, Lee et al. reported the \textit{multi-unit activations} (MUAs), defined as the number of times the voltage crossed some threshold within a 10 ms bin. MUAs reflect the combined activity of adjacent neurons, and up to ten neurons may contribute to the detected threshold crossings for a given site \cite{buzsaki_large-scale_2004}.
+
 \subsection{Summarization of firing after response onset}
+\label{subsct:scalar_summary}
+% \begin{todoblock}
+% (Delete this section for space?) Let \( i \in \{ 1, 2, \dots 35 \} \) index the texture family, \( j \in \{ 1, 2, \dots, 15 \} \) index the specific sample image, and \( k \in \{ 1, 2, \dots, 6 \} \) index the repetition of the specific image. Within a given array, the neural population response from \( p \) sites at time bin \( t \) can be modeled as
+% \begin{equation}
+%     \bfY_{i, j, k} (t) = \bfmu (t) + \bfX_{i, j} (t) + \bfeps_{i, j, k} (t), 
+% \end{equation}
+% where \( \bfY_{i, j, k} \in \mathbb{R}^p \) is a vector of the observed  responses, \( \bfmu \) is the vector of per-site mean responses, \( \bfX_{i, j} \) is the vector of expected neural responses to sample image \( j \) from family \( i \), and \( \bfeps_{i, j, k} \) is trial-specific noise \cite{pospisil_revisiting_2025} (\todo{replace this citation with a more basic methods paper}). For some distance metric \( d \), we are interested in the distributions of between-family distances \( d (\bfX_{i_1, -}, \bfX_{i_2, -}) : i_1 \neq i_2 \) and the between-sample distances \( d (\bfX_{i, j_1}, \bfX_{i, j_2}) : j_1 \neq j_2 \) \todo{which we estimate through inference on the observed \(\bfY_{i, j, k}\) (wording?)} 
+% \end{todoblock}
 
-\begin{todoblock}
-(Delete this section for space?) Let \( i \in \{ 1, 2, \dots 35 \} \) index the texture family, \( j \in \{ 1, 2, \dots, 15 \} \) index the specific sample image, and \( k \in \{ 1, 2, \dots, 6 \} \) index the repetition of the specific image. Within a given array, the neural population response from \( p \) sites at time bin \( t \) can be modeled as
+For analyses, we summarized the MUAs by taking the mean firing rate in a 150 ms window after response onset.
+% Due to biological constraints on neural signal propagation, the stimulus-response latency tends to increase for each successive region. 
+We determined response onset with Lee et al.'s procedure \cite{lee_developmentally_2024}. For site \( s \) and bin \( t \), let the observed distance between non-blank and blank stimuli be
 \begin{equation}
-    \bfY_{i, j, k} (t) = \bfmu (t) + \bfX_{i, j} (t) + \bfeps_{i, j, k} (t), 
+d'_s (t) = 
+\frac{\mu_{\textrm{non-blank}} (t) - \mu_{\textrm{blank}} (t) }
+{\sqrt{\frac{1}{2} \left( \sigma^2_{\textrm{non-blank}} (t) + \sigma^2_{\textrm{blank}} (t) \right)^2 }} \quad \textrm{(Cohen's d)},
 \end{equation}
-where \( \bfY_{i, j, k} \in \mathbb{R}^p \) is a vector of the observed  responses, \( \bfmu \) is the vector of per-site mean responses, \( \bfX_{i, j} \) is the vector of expected neural responses to sample image \( j \) from family \( i \), and \( \bfeps_{i, j, k} \) is trial-specific noise \cite{pospisil_revisiting_2025} (\todo{replace this citation with a more basic methods paper}). For some distance metric \( d \), we are interested in the distributions of between-family distances \( d (\bfX_{i_1, -}, \bfX_{i_2, -}) : i_1 \neq i_2 \) and the between-sample distances \( d (\bfX_{i, j_1}, \bfX_{i, j_2}) : j_1 \neq j_2 \) \todo{which we estimate through inference on the observed \(\bfY_{i, j, k}\) (wording?)} 
-\end{todoblock}
-
-For analyses, we summarized the time series of multi-unit activations by taking the mean firing rate in a 150 ms window after response onset. Visual information is processed sequentially from V1, V2, V4 and IT, so the latency from stimulus presentation to detectable neural response differs between regions. To calculate onset time, we followed Lee et al.'s procedure \cite{lee_developmentally_2024}. For site \( i \) and bin \( t \), let the distance between non-blank and blank stimuli be
-\begin{equation}
-d'_i (t) = 
-\frac{\overline{Y}_{\textrm{non-blank}} (t) - \overline{Y}_{\textrm{blank}} (t) }
-{\sqrt{\frac{1}{2} \left( \hat\sigma^2_{\textrm{non-blank}} (t) + \hat\sigma^2_{\textrm{blank}} (t) \right)^2 }} \quad \textrm{(Cohen's d)},
-\end{equation}
-where \( \overline{Y} \) is the mean across non-blank or blank stimuli and \( \hat\sigma^2 \) is the usual sample-corrected variance estimator. The onset time for site \( i \) was defined as the earliest \( t \) such that \( |d'_i (t) |, |d'_i (t + 1)|, |d'_i (t + 2)| \geq 0.4 \) and shared the same sign. For each region, we calculated the overall onset time as the median of site onset times, giving an onset of 60 ms for V1, 70 ms for V2, 70 ms for V4, and 100 ms for IT (see Appendix \ref{appx:onsets}, Fig. \ref{fig:onsets} for details). \todo{TODO (or move to discussion): These latencies are about 10-20 ms longer than reported in literature \cite{dicarlo_how_2012}, though shifting the windows earlier did not affect the overall results.}
+which can be estimated as
+\begin{equation*}
+\hat{d}'_s (t) = 
+\frac{\overline{y}_{\textrm{non-blank}} (t) - \overline{y}_{\textrm{blank}} (t) }
+{\sqrt{\frac{1}{2} \left( \hat\sigma^2_{\textrm{non-blank}} (t) + \hat\sigma^2_{\textrm{blank}} (t) \right)^2 }},
+\end{equation*}
+where \( \overline{y} \) is the mean across non-blank or blank stimuli and \( \hat\sigma^2 \) is the usual sample-corrected variance estimator. We can estimate the onset time for site \( s \) as the earliest \( t \) such that \( |\hat{d}'_s (t) |, |\hat{d}'_s (t + 1)|, |\hat{d}'_s (t + 2)| \geq 0.4 \) and share the same sign. For each region, we calculated the overall onset time as the median of estimated site onset times, giving an onset of 60 ms for V1, 70 ms for V2, 70 ms for V4, and 100 ms for IT (see Appendix \ref{appx:onsets}, Fig. \ref{fig:onsets} for details). \todo{TODO: These latencies are about 10-20 ms longer than reported in literature \cite{dicarlo_how_2012}, though shifting the windows earlier or shortening windows to 100 ms did not affect the overall results (Appendix \ref{appx:window}).}
 
 \subsection{Reliability-based site selection between regions}
 
-Distance calculations may be affected by a variety of features \todo{unrelated to the neural encoding of information}. For instance, the total number of recording sites varies by region, and higher dimensions can inflate the calculated distance (Table \ref{tbl:sites}). To address this, one could sub-sample a fixed number of sites from each region. However, this solution is imperfect, as sites are not necessarily independently sampled nor identically distributed. Sites within and between regions may differ in \textit{reliability}, \todo{defined as consistency in response to repetitions of the same stimulus.} \todo{Sites can be reliable without being \textit{responsive}, defined as neural response to a stimuli set being significantly different from baseline. Since we expect the population code of texture responses to be more informative than any single neuron, site selection based on matched reliability includes sites that might be important for encoding without being obviously selective for textures.} 
+Distance calculations may be affected by a variety of features \todo{unrelated to the neural encoding of information}. For instance, the total number of recording sites varies by region (Table \ref{tbl:sites}) and higher dimensions can inflate the calculated distance. To address this, one could sub-sample a fixed number of sites from each region. However, this solution is imperfect, as sites are not necessarily independently sampled nor identically distributed. Sites within and between regions may differ in \textit{reliability}, \todo{defined as consistency in response to repetitions of the same stimulus.}
 
-To measure site reliability, we calculated the split-half correlation on repetitions of the images. \todo{As an aside, Lee et al. originally averaged over families and coherence, but this creates some selection bias for sites that are responsive at the family level.}  For each site, we split observations into two arbitrary groups of three repetitions each. We then averaged responses based on image then found the correlation \todo{(as typical Pearson's \( \rho \))} over the two resulting vectors (each of length 1051, for 1050 sample images and 1 aggregated response to blank stimuli). Differences in handling blank images did not substantially affect the overall correlations, and correlations remained consistent over different choices of the split (Appx. \ref{appx:split_corrs}). \todo{After matching site reliability, we sub-sampled \( p = 10, 20, 30, 40 \) sites for analyses.}
+To measure site reliability, we calculated the split-half correlation on repetitions of the images. For each site, we split observations into two arbitrary groups of three repetitions each. We then averaged responses based on image then calculated the correlation between the splits (Pearson's \( r \)). To stabilize split-half correlation calculations, we averaged \( r \) over all \( \binom{6}{3} = 20 \) possible splits of two groups of three repetitions. We then obtained the reliability \( \rho \) by Spearman-Brown correcting the averaged correlations. Differences in handling blank images did not substantially affect the overall correlations, and correlations remained consistent over different choices of the split (Appendix \ref{appx:split_corrs}).  \todo{After matching site reliability, we sub-sampled \( p = 10, 20, 30, 40 \) sites for analyses.}
 
 \subsection{Lifetime and population sparseness of sites}
 
+Neural responses can exhibit \textit{lifetime} or \textit{population} sparseness \cite{willmore_characterizing_2001}. A single site shows lifetime sparseness if the responses are heavy-tailed, i.e., the site produces relatively large responses to a small set of stimuli. A group of sites shows population sparsity if only a small subset of neurons respond to any given stimulus, with the responsive subset varying based on stimulus. 
+
+Let sites be indexed from \( s = 1, 2, \dots, p \) and let stimuli be indexed from \( i = 1, \dots, n \). Let \(\mu_{s, i} \geq 0 \) be site \( s \)'s mean response to the \(i\)th stimulus. Each site may exhibit different baseline firing rates, defined as the mean response to blank stimulus. For site \( s \), let \( \mu_{s, 0} \) be its baseline firing rate. To account for different baselines responses, we calculate sparsity on the log ratio of the responses, i.e., \( r_{s, i } = \log \left( \mu_{s, i} / \mu_{s, 0} \right) \). We can measure site \( s \)'s lifetime sparseness \( S_{s}^{L} \) with Hoyer sparsity \cite{hoyer_non-negative_2004}, calculated as
+\begin{equation}
+\label{eqn:sparsity_lifetime}
+S_{s}^{L} = \frac{1}{\sqrt{n} - 1} \left( \sqrt{n} - \frac{\sum_{i = 1}^n |r_{s, i}|}{\sqrt{\sum_{i = 1}^n r_{s, i}^2}} \right),
+\end{equation}
+\todo{(TODO: possibly omit population sparseness).} Population sparseness \( S_{i, P} \) can be found similarly, but is instead taken with respect to the stimulus \( i \), i.e.,
+\begin{equation}
+\label{eqn:sparsity_population}
+% S_{i, P} = \left( 1 - \frac{\left( \frac{1}{p} \sum_{s = 1}^p \mu_{i, s} \right)^2}{\frac{1}{p} \sum_{s = 1}^p \mu_{i, s}^2} \right) \left( \frac{1}{1 - \frac{1}{p}} \right).
+S_{i, P} = \frac{1}{\sqrt{p} - 1} \left( \sqrt{p} - \frac{\sum_{s = 1}^p |r_{s, i}|}{\sqrt{\sum_{s = 1}^p r_{s, i}^2}} \right).
+\end{equation}
+The resulting sparsity values fall between \( [0, 1] \), where 0 corresponds to a uniform response distribution and 1 corresponds to a single non-zero response. For further discussion on different sparsity approaches, see Appendix \ref{appx:sparsity}.
+
+% Alternatively, Hurley and Rickard (2009) suggest the Gini coefficient as an option that satisfies their desiderata for a sparseness metric \cite{hurley_comparing_2009}. On this dataset, we did not find substantial differences between the ratio of moments approach and the Gini coefficient (\todo{Appendix \ref{appx:sparsity_vs}}). 
 \begin{todoblock}
-(Introduce why sparseness is an important consideration when comparing IT against prior visual regions.) Neural responses can exhibit \textit{lifetime} or \textit{population} sparseness \cite{willmore_characterizing_2001}. A single site shows lifetime sparseness if the responses are heavy-tailed, i.e., the site produces relatively large responses to a small set of stimuli. A group of sites shows population sparsity if only a small subset of neurons respond to any given stimulus, with the responsive subset varying based on stimulus. Sparseness can be quantified by a normalized ratio of the first and second moments of responses \cite{rolls_sparseness_1995, vinje_sparse_2000}.  For a given site, let stimuli be indexed from \( i = 1, \dots, n \) and let \(r_i\) be the response to the \(i\)th stimulus. The site's lifetime sparsity can calculated as
+% The above sparsity measure is invariant to multiplicative scaling but not translation. For instance, the addition of a positive constant to all observations reduces the calculated sparsity \cite{hurley_comparing_2009, dalton_measurement_1920}. Thus, we replaced raw firing rate with the deviation of the response from the baseline response (mean response to blank stimuli, ), i.e., \( | \Delta \mu_{i, s} | =  | \mu_{i, s} - \mu_{\textrm{blank}, s} |\). By taking the distance from the baseline, the sparsity measure reflects the sparseness of the site response \textit{to stimuli}. Then, when estimating lifetime sparsity, we first stabilized the observed responses by averaging over the six repetitions of each individual image, i.e., all pairwise combinations of of family \( i = 1, 2, \dots, 35 \) and sample \( j = 1, 2, \dots, 15 \). We estimated each site's \( \mu_{\textrm{blank}, s} \) by taking an average over the observed responses to blank images
+% (TODO: Add figures demonstrating differences in baseline firing between regions and the spread of responses around the baseline.)
+To estimate sparsity, we estimate the firing rate as \( \widehat\mu_{s, i} = \frac{1}{6} \sum_{k = 1}^{6} Y_{s, i, k} \), i.e., the observed mean of site \( s \)'s response to stimulus \( i \) over repetitions \( k = 1, 2, \dots, 6 \). Similarly, we estimate site \( s \)'s baseline response \( \widehat{\mu}_{s, 0} \) as site \( s \)'s observed mean over blank stimuli. Plugging these into the sparsity formula gives the estimator
 \begin{equation}
-S_{\textrm{lifetime}} = \left( 1 - \frac{\left( \frac{1}{n} \sum_{i = 1}^n r_i \right)^2}{\frac{1}{n} \sum_{i = 1}^n r_i^2} \right) \left( \frac{1}{1 - \frac{1}{n}} \right).
+\label{eqn:sparsity_estimate}
+\hat{S}_{s}^{L} = \frac{1}{\sqrt{n} - 1} \left( \sqrt{n} - \frac{\sum_{i = 1}^n |\hat{r}_{s, i}|}{\sqrt{\sum_{i = 1}^n \hat{r}_{s, i}^2}} \right), \quad 
+\hat{r}_{s, i} = \log \left( \frac{\widehat\mu_{s, i},}{ \widehat{\mu}_{s, 0}} \right)
 \end{equation}
-Population sparseness can be found similarly. For a given \textit{stimulus}, let sites be indexed from \( j = 1, \dots, p \) and let \( r_j \) be site \( j \)'s response to the stimulus. The population sparseness with respect to the stimulus can be found as
-\begin{equation}
-S_{\textrm{pop.}} = \left( 1 - \frac{\left( \frac{1}{p} \sum_{j = 1}^p r_j \right)^2}{\frac{1}{p} \sum_{j = 1}^p r_j^2} \right) \left( \frac{1}{1 - \frac{1}{p}} \right).
-\end{equation}
-Conveniently, the above definitions are nonparametric, scale-invariant, and bounded between \( [0, 1] \) (corresponding to a uniform response or a single non-zero response). Alternatively, Hurley and Rickard (2009) suggest the Gini coefficient as an option that satisfies their desiderata for a sparseness metric  \cite{hurley_comparing_2009}.
+with \( \hat{S}_{i}^P \) defined similarly.
+
+While the estimators \( \widehat\mu_{s, i}, \widehat{\mu}_{s, 0} \) may be individually unbiased, the estimator of sparsity will be biased due to Jensen's inequality. 
 \end{todoblock}
 
 \subsection{Separability based on Mahalanobis distance}
+\label{methods:d_M}
 
 % if you're wondering why this is suddenly \pmb instead of \boldsymbol or \mathbf, it's because \pmb is the only one that works with \Sigma
 
@@ -178,11 +239,12 @@ Conveniently, the above definitions are nonparametric, scale-invariant, and boun
 % or the Euclidean distance after a whitening transformation. 
 % \end{todoblock}
 
+\todo{(TODO: Rewrite with notation specific to this problem to avoid introducing \( \bfx, \bfy \).)}
 To estimate the separability of neural responses, we calculated the Mahalanobis distance \( d_M \) as applied in Hotelling's two-sample \( t \)-test.  
 % Let $P \sim \mathcal{N}_k (\pmb\mu, \pmb\Sigma)$, i.e., a $k$-dimensional multivariate Normal distribution. 
 % it would be more consistent to use d for the number of sites
 % but it collides with d_M
-Let \( P \) be some distribution on \( \mathbb{R}^p \) and take \( \bfx_1, \bfx_2, \dots, \bfx_{n_x} \) and \( \bfy_1, \bfy_2, \dots, \bfy_{n_y} \) as independent samples from \( P \). Let each sample be a column vector. We can then define the sample mean vectors
+Generally, let \( P \) be some distribution on \( \mathbb{R}^p \) and take \( \bfx_1, \bfx_2, \dots, \bfx_{n_x} \) and \( \bfy_1, \bfy_2, \dots, \bfy_{n_y} \) as independent samples from \( P \). Let each sample be a column vector. We can then define the sample mean vectors
 \( \overline{\bfx} = \frac{1}{n_x} \sum_{i = 1}^{n_x} \bfx_i,
 \overline{\bfy} = \frac{1}{n_y} \sum_{i = 1}^{n_y} \bfy_i, \)
 and the sample covariance matrices
@@ -208,30 +270,50 @@ For between-sample comparisons, the standard multivariate covariance estimator c
 
 \section{Results}
 
-\subsection{IT tends to be sparser and less reliable}
+\subsection{Reliable IT sites tend to be sparser}
 
-\begin{todoblock}
-(Need the sparsity results, including sparsity vs. \( \rho \) plot.) 
+Split-half correlations in V1 and IT were right-skewed, with a mode of \( \rho \approx 0.1 \). For V2, the correlations were left-skewed. V4 has a somewhat bimodal distribution, with a local peak of \( \rho \approx 0.1 \) and \( \rho \approx 0.6 \) (Figure \ref{fig:split_corrs_distribution}). Among reliable sites of \( \rho > 0.2 \), the distribution of per-site lifetime sparsities \(S^\textrm{lifetime} \) tended to be lower and more concentrated for V1. The distributions looked more similar between V2, V4, and IT, with IT slightly higher (Figure \ref{fig:sparsity_vs_corr}, top). Reliable sites in IT tended to be sparser, and unlike other regions, IT lacked reliable sites with \textit{low} sparsity (Figure \ref{fig:sparsity_vs_corr}, bottom). 
 
-Split-half correlations in V1 and IT were right-skewed, with a mode of \( \rho \approx 0.1 \). For V2, the correlations were left-skewed. V4 has a somewhat bimodal distribution, with a local peak of \( \rho \approx 0.1 \) and \( \rho \approx 0.6 \). 
-\end{todoblock}
+\todo{(TODO: High sparsity sites in V2 and V4 show qualitative differences from high sparsity sites in IT. Namely, more consistency in firing within families).}
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{figures/split_corrs_distribution.png}
-    \caption{Empirical cumulative distribution functions (left) and histograms (right) for the split-half correlations by region. Data reflects split-half correlations performed when all blanks are averaged. V1 and IT are right-skewed, V2 is left-skewed, and V4 has a somewhat bimodal distribution for low- and high-correlations.}
+    \includegraphics[width=0.9\linewidth]{img/split_corrs_distribution.png}
+    \caption{(Left) Empirical cumulative distribution functions. (Right) Histograms for the split-half correlations by region. Data reflects split-half correlations performed when all blanks are averaged. V1 and IT are right-skewed, V2 is left-skewed, and V4 has a somewhat bimodal distribution for low- and high-correlations.}
     \label{fig:split_corrs_distribution}
 \end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/sparsity_vs_corr.png}
+    \caption{(Top) Height-normalized histograms of lifetime (per-site) sparsities for each region, only including sites with \( \rho > 0.2 \). (Bottom) Lifetime sparsity and split-half correlation, with within-region arrays separated by color and shape. The dashed lines in the lower right covers sites with low sparsity (\(S^\textrm{lifetime}_s < 0.1 \) and high reliability (\( \rho > 0.6 \)). }
+    \label{fig:sparsity_vs_corr}
+\end{figure}
+
+\subsection{IT responses show sparseness at the sample level, not the family level}
+
+\todo{TODO: Write up Figure \ref{fig:sparsity_fam_vs_img}. Also, need to append the baseline firings and average firings to the figure to make argument more obvious.}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/sparsity_fam_vs_img.png}
+    \caption{In V1, V2, and V4, lifetime sparsity calculated on image-averaged responses positively correlates with lifetime sparsity calculated on family-averaged responses. In IT, family-averaged responses show low sparsity (high uniformity).}
+    \label{fig:sparsity_fam_vs_img}
+\end{figure}
+
+\subsection{IT produces informative inhibitory responses to texture stimuli}
+
+\todo{TODO. Likely an Appendix.}
 
 \subsection{Between-family comparisons}
 
 \begin{todoblock}
-For now, let's take a somewhat arbitrary ``matched-reliability'' criteria of sites with split-half correlation between \( \rho \in [0.3, 0.6] \), chosen due to similarity of the slopes in the eCDF (Fig. \ref{fig:split_corrs_distribution}). This yields 39 sites in V1, 49 sites in V2, 57 sites in V4, and 53 sites in IT. Figure \ref{fig:dM_pf} shows the results from a single arbitrary subsample of 30 sites from each region alongside the split-half correlations for each site for reference. The distributions for the split-half correlations for the selected sites are not exactly matched, but the trend in reliability does not appear to explain the trend in the distances.
+(TODO: Currently still running the full simulation set for repeated sub-sampling). For now, let's take a somewhat arbitrary ``matched-reliability'' criteria of sites with split-half correlation between \( \rho \in [0.3, 0.6] \), chosen due to similarity of the slopes in the eCDF (Fig. \ref{fig:split_corrs_distribution}). This yields 39 sites in V1, 49 sites in V2, 57 sites in V4, and 53 sites in IT. Figure \ref{fig:dM_pf} shows the results from a single arbitrary subsample of 30 sites from each region alongside the split-half correlations for each site for reference. The distributions for the split-half correlations for the selected sites are not exactly matched, but the trend in reliability does not appear to explain the trend in the distances.
 \end{todoblock}
 
 \begin{figure}
     \centering
-    \includegraphics[width=\linewidth]{figures/dM_pf.png}
+    \includegraphics[width=\linewidth]{img/dM_pf.png}
     \caption{(Left) Violin plots of the pairwise between-family Mahalanobis distances, showing a trend of increasing distance with higher visual areas. The plots for noisy textures are included for a comparison, showing noisy distances tend to be shorter with a less pronounced trend. (Right) The split-half correlations of the sites included in the left violin plots show differences in distributions between regions. However, the trends in these distributions do not seem to be aligned with the trends in the naturalistic Mahalanobis distances.}
     \label{fig:dM_pf}
 \end{figure}
@@ -246,7 +328,7 @@ Figure \ref{fig:dM_ps} is the between-sample analogue to Figure \ref{fig:dM_pf} 
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.6\linewidth]{figures/dM_ps.png}
+    \includegraphics[width=0.6\linewidth]{img/dM_ps.png}
     \caption{Violin plots of the pairwise between-sample Mahalanobis distances, with no obvious trend between regions. The naturalistic and noisy distances appear similar.}
     \label{fig:dM_ps}
 \end{figure}
@@ -294,12 +376,12 @@ In addition to passive fixation recordings, Lee et al. also measured behavioral 
 \subsection{Onset time calculation}
 \label{appx:onsets}
 
-The criteria for onset time identification is somewhat strict, requiring that \(d'_i (t) \) between non-blank and blank images exceeds a magnitude of 0.4 for three consecutive windows (keeping the sign consistent). Thus, an onset time does not necessarily exist for all sites. IT has the lowest absolute number and lowest proportion of sites with valid onset times, likely due to sparsity. As expected, onset times seem to get longer with higher visual areas. Figure \ref{fig:onsets} contains histograms for the detected onset times. Each region contains a few sites with abnormally long latencies close to 150 ms (recall that the stimulus is presented for 100 ms followed by a 100 ms blank), which are likely spurious. However, removing these long latencies did not affect the calculated median onsets. 
+The criteria for onset time identification is somewhat strict, requiring that \(d'_i (t) \) between non-blank and blank images exceeds a magnitude of 0.4 for three consecutive windows (keeping the sign consistent). Thus, an onset time does not necessarily exist for all sites. IT has the lowest absolute number and lowest proportion of sites with valid onset times, likely due to sparsity. As expected, onset times seem to get longer with higher visual areas. Figure \ref{fig:onsets} contains histograms for the detected onset times. Each region contains a few sites with abnormally long latencies close to 150 ms (recall that the stimulus is presented for 100 ms followed by a 100 ms blank), which are likely spurious. Removing these long latencies did not affect the calculated median onsets. 
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.9\linewidth]{figures/onsets.png}
-    \caption{(Left) The number of sites with a calculated onset time given the distance threshold, sorted by region. (Center) The proportion of sites in each region with a calculated onset time. IT has both the lowest absolute number and lowest proportion of valid onset times. (Right) Histograms of the calculated onset times per region, with normalized bar heights. Median onsets times are labeled with a dashed line.}
+    \includegraphics[width=0.9\linewidth]{img/onsets.png}
+    \caption{(Left) The number of sites with a calculated onset time given the distance threshold, sorted by region, alongside the proportion of sites in each region with a calculated onset time. IT has both the lowest absolute number and lowest proportion of valid onset times. (Right) Histograms of the calculated onset times per region, with normalized bar heights. Median onset times are indicated with a dashed line.}
     \label{fig:onsets}
 \end{figure}
 
@@ -312,10 +394,76 @@ When calculating split-half correlations, the blank stimuli can be: 1) \textbf{s
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\linewidth]{figures/split_corrs_blanks.png}
+    \includegraphics[width=0.8\linewidth]{img/split_corrs_blanks.png}
     \caption{Normalized histograms of the split-half correlations calculated for each site, averaged across the 20 possible splits. The rows indicate the handling of blank images included in the vectors used for the split-half correlation calculation, with blanks either omitted entirely, aggregated over all repetitions, or separated into 100 instances of 6 repetitions each. Dashed lines mark the median. The distribution of correlations for V1 and IT are more right-skewed. Differences between the number of blank images are slight, though in general, the median correlation is lowest when including separated blank images (with the exception of IT).}
     \label{fig:split_corrs_blanks}
 \end{figure}
+
+\newpage
+
+\section{Results did not change when shifting the window of averaging}
+\label{appx:window}
+
+\newpage
+
+\section{Estimating sparsity}
+
+\subsection{Comparison of sparsity measures}
+\label{appx:sparsity} 
+
+For brevity, we will describe various measures of sparsity with reference to lifetime sparsity for a single fixed site \( s \). Let stimuli be indexed from \( i = 1, \dots, n \) and let \(\mu_{i} \geq 0 \) be site \( s \)'s response to the \(i\)th stimulus. 
+
+Hurley and Rickard (2009) describe six desiderata of a sparsity metric, based on literature on income inequality \cite{hurley_comparing_2009}. A measure of sparsity should
+
+\begin{enumerate}
+    \item decrease if the distance between the highest and lowest responses decreases (``Robin Hood''),
+    \item be invariant to a uniform scaling of the responses,  
+    \item decrease if a positive constant is added to each response, 
+    \item be invariant to duplication of the responses,
+    \item increase if one response grows large, and  
+    \item increase if many zero responses are added to the set. 
+\end{enumerate}
+
+Among the sparsity measures they consider, Hurley and Rickard prove that only the Gini index and \( pq \)-mean sparsity fulfill all six criteria. For ordered responses \( \mu_{s, (1)} \leq \mu_{s, (2)} \leq \cdots \leq \mu_{s, (n)}, \) the Gini index can be calculated as 
+\[ 
+% S_{\textrm{Gini}} = 
+% \frac{2}{n^2 \overline{r}}
+% \sum_{i = 1}^n i \left( \mu_{(i)} - \overline{\mu} \right):  \overline{\mu} = \frac{1}{n} \sum_{i = 1}^{n} \mu_{s, i}.
+S_{\textrm{Gini}} = 
+1 - \frac{2}{n \sum_{i = 1}^n \mu_{s, i}} \sum_{i = 1}^n
+\mu_{s, (i)} \left( n - i + 1/2 \right). \]
+The \(pq\)-mean can be found as the ratio of generalized means
+\[ 
+S_{pq} = - \frac{\left( \frac{1}{n} \sum_{i = 1}^n \mu_{s, i}^p \right)^{1 / p}}{\left( \frac{1}{n} \sum_{i = 1}^n \mu_{s, i}^q \right)^{1/q}},
+\]
+and satisfies the desiderata when \( p \leq 1, q > 1 \). 
+
+For \( p = 1, q = 2 \), the \( pq \)-mean sparsity resembles the ratio of the first and second moments (RM), a common sparseness measure in neuroscience \cite{rolls_sparseness_1995, vinje_sparse_2000}. The RM sparsity can be found as
+\begin{equation}
+S_{\textrm{RM}} = \left( 1 - \frac{\left( \frac{1}{n} \sum_{i = 1}^n \mu_{i} \right)^2}{\frac{1}{n} \sum_{i = 1}^n \mu_{i}^2} \right) \left( \frac{1}{1 - \frac{1}{n}} \right).
+\end{equation}
+In the above formula, the term \( \left( \frac{1}{1 - \frac{1}{n}} \right) \) scales the above to \( [0, 1] \), with 0 indicating uniformity and 1 indicating maximal concentration. However, the above does not meet desiderata (4). 
+
+\textit{Aside}: In general, scaling to improve interpretability trades off with invariance to duplication. For example, in the extreme case with only a single non-zero response, \( S_{\textrm{Gini}} = \frac{n - 1}{n} \). Thus, a common correction scales the Gini index by \( \frac{n}{n - 1} \) such that \( 1 \) indicates maximum concentration in the data, and the resulting measure no longer satisfies desiderata (4).
+
+In neural response separability, one might be interested in responses relative to the site's baseline rather than zero. Let \( \mu_{s, 0} \) be the baseline response for site \( s \), defined as the mean response to blank stimuli.
+%Consider a site with a baseline response of 60 Hz where most of the stimuli produce an average response of 61 Hz while a single stimulus produces an average response of 80 Hz. Should this be measured as the same sparsity as a site with a baseline of 10 Hz, most stimuli evoking 11 Hz, and a single stimulus evoking 30 Hz? Furthermore, what about a site with a baseline of 60 Hz, most stimuli evoking 59 Hz, and a single stimulus at 40 Hz? 
+We experimented with a few different strategies: 
+
+\begin{enumerate}
+    \item calculating sparsity with respect to \( \mu_{s, i} \), ignoring the baseline; 
+    \item subtracting the baseline, i.e., \( \mu_{s, i} - \mu_{s, 0} \); or
+    \item taking the log ratio, i.e., \( \log_2 \left( \mu_{s, i} / \mu_{s, 0} \right). \)
+\end{enumerate}
+
+When correcting for baseline firing, note that many common sparsity measures (including the Gini index, \( pq \)-mean, and RM) cannot be applied to a mix of positive and negative values. As an alternative, we can apply the Hoyer sparsity measure \cite{hoyer_non-negative_2004}, defined as
+\[ 
+S_{\textrm{Hoyer}} = \frac{1}{\sqrt{n} - 1} \left( \sqrt{n} - \frac{\sum_{i = 1}^n |\mu_{s, i}|}{\sqrt{\sum_{i = 1}^n \mu_{s, i}^2}} \right).
+\]
+Like \( S_{\textrm{RM}}\), \( S_{\textrm{Hoyer}} \) is bounded by \( [0, 1] \), with 0 indicating complete uniformity and 1 indicating a single non-zero value. Similarly, \( S_{\textrm{Hoyer}} \) fulfills Hurley and Rickard's listed desiderata, with the exception of (4) \cite{hurley_comparing_2009}. Outside of \( S_{\textrm{Hoyer}} \), one can simply apply the standard sparsity measures to the absolute value of the transformed responses. 
+
+\subsection{Different sparsity metrics produce similar results}
+\label{appx:sparsity_vs}
 
 \newpage
 
@@ -325,9 +473,9 @@ When calculating split-half correlations, the blank stimuli can be: 1) \textbf{s
 \label{appx:shrinkage}
 
 To briefly describe Schafer and Strimmer's derivation \cite{schafer_shrinkage_2005}, let \( \boldsymbol{\psi} = (\psi_1, \dots, \psi_p) \) be the parameters of an unrestricted high-dimensional model of interest and let \( \boldsymbol{\theta} \) be the parameters of a lower dimensional restricted sub-model. E.g., \( \boldsymbol{\psi} \) is the mean vector of a multivariate Normal and \( \boldsymbol{\theta} \) is the vector of a contrained submodel where the means are all assumed to be equal. Then, the linear shrinkage approach finds the new estimator
-\[ \boldsymbol{\psi}^* = \lambda \hat{\boldsymbol{\theta}} + (1 - \lambda) \hat{\boldsymbol{\psi}} : \lambda \in [0, 1] \]
-where the optimal value \( \lambda^* \) can be found analytically by optimizing 
-\[ \lambda^* = 
+\[ \boldsymbol{\psi}^* = \mu \hat{\boldsymbol{\theta}} + (1 - \mu) \hat{\boldsymbol{\psi}} : \mu \in [0, 1] \]
+where the optimal value \( \mu^* \) can be found analytically by optimizing 
+\[ \mu^* = 
 \frac
 {\sum_{i = 1}^p \left( \var (\hat\psi_i) - \cov (\hat\theta_i, \hat\psi_i) \right)}
 {\sum_{i = 1}^p \E [(\hat\theta_i - \hat\psi_i)^2]}. \]
@@ -346,7 +494,7 @@ Then, \( d_M \) calculation can proceed with the non-shrinkage sample covariance
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.7\linewidth]{figures/shrinkage_vs_randdichot.png}
+    \includegraphics[width=0.7\linewidth]{img/shrinkage_vs_randdichot.png}
     \caption{Means and standard deviations are calculated within each texture family. The within-family means tend to show more correlation across all regions. The correlation between the pairwise sample and randomized dichotomies standard deviations is worse in IT than other regions.}
     \label{fig:shrinkage_vs_randdichot}
 \end{figure}
@@ -370,5 +518,7 @@ Then, \( d_M \) calculation can proceed with the non-shrinkage sample covariance
 \end{table}
 
 \end{todoblock}
+\newpage 
+
 
 \end{document}
